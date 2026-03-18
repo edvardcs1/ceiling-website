@@ -1,7 +1,7 @@
-// Vercel Serverless Function - Contact Form Handler
-// This uses Gmail SMTP via Cloudflare email routing
+// Vercel Serverless Function - Contact Form Handler using Resend
+// Resend is the email service built by the Vercel team
 
-const nodemailer = require('nodemailer');
+import { Resend } from 'resend';
 
 export default async function handler(req, res) {
   // Only allow POST requests
@@ -17,21 +17,12 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Create Gmail transporter
-    // Uses environment variables for security
-    const transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.GMAIL_USER, // Your Gmail address
-        pass: process.env.GMAIL_APP_PASSWORD, // Gmail App Password
-      },
-    });
+    // Initialize Resend with API key from environment variables
+    const resend = new Resend(process.env.RESEND_API_KEY);
 
-    // Email content
-    const mailOptions = {
-      from: `"CM Acoustic Website" <${process.env.GMAIL_USER}>`,
+    // Send email using Resend
+    const data = await resend.emails.send({
+      from: 'CM Acoustic Website <onboarding@resend.dev>', // You can customize this after domain verification
       to: process.env.RECIPIENT_EMAIL || 'info@cmacousticceiling.com',
       replyTo: email,
       subject: `New Estimate Request from ${name}`,
@@ -56,12 +47,9 @@ Project Type: ${project || 'Not specified'}
 Message:
 ${message}
       `,
-    };
+    });
 
-    // Send email
-    await transporter.sendMail(mailOptions);
-
-    res.status(200).json({ message: 'Email sent successfully' });
+    res.status(200).json({ message: 'Email sent successfully', data });
   } catch (error) {
     console.error('Email sending failed:', error);
     res.status(500).json({ 
