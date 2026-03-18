@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     // IMPORTANT: With unverified domain, you can only send TO your own Resend account email
     // After verifying cmacousticceiling.com in Resend, you can send to any email
     const data = await resend.emails.send({
-      from: 'CM Acoustic Website <onboarding@resend.dev>',
+      from: 'CM Acoustic Website <info@cmacousticceiling.com>',
       to: process.env.RECIPIENT_EMAIL,
       replyTo: email,
       subject: `New Estimate Request from ${name}`,
