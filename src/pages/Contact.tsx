@@ -12,13 +12,38 @@ export const Contact = () => {
     'Get a free quote for your acoustic ceiling or drywall project. Contact CM Acoustic LLC today at (480) 417-8443 or visit us in Mesa, AZ.'
   );
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setFormState('submitting');
-    // Simulate API call
-    setTimeout(() => {
-      setFormState('success');
-    }, 1500);
+    
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
+      phone: formData.get('phone') as string,
+      project: formData.get('project') as string,
+      message: formData.get('message') as string,
+    };
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        setFormState('success');
+      } else {
+        throw new Error('Failed to send message');
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+      alert('Failed to send message. Please try again or call us directly.');
+      setFormState('idle');
+    }
   };
 
   return (
@@ -136,6 +161,7 @@ export const Contact = () => {
                           <input 
                             type="text" 
                             id="name" 
+                            name="name"
                             required 
                             className="bg-light border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20"
                             placeholder="John Doe"
@@ -146,6 +172,7 @@ export const Contact = () => {
                           <input 
                             type="email" 
                             id="email" 
+                            name="email"
                             required 
                             className="bg-light border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20"
                             placeholder="john@example.com"
@@ -158,6 +185,7 @@ export const Contact = () => {
                           <input 
                             type="tel" 
                             id="phone" 
+                            name="phone"
                             required 
                             className="bg-light border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20"
                             placeholder="(480) 000-0000"
@@ -167,6 +195,7 @@ export const Contact = () => {
                           <label htmlFor="project" className="text-sm font-bold text-gray-700">Project Type</label>
                           <select 
                             id="project" 
+                            name="project"
                             className="bg-light border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20"
                           >
                             <option>Acoustic Ceiling Installation</option>
@@ -181,6 +210,7 @@ export const Contact = () => {
                         <label htmlFor="message" className="text-sm font-bold text-gray-700">Project Details *</label>
                         <textarea 
                           id="message" 
+                          name="message"
                           required 
                           rows={5}
                           className="bg-light border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/20"

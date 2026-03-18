@@ -45,8 +45,8 @@ export const Navbar = () => {
               className="h-10 w-auto object-contain"
             />
             <div className="flex flex-col">
-              <span className="text-xl font-bold text-primary leading-none">CM ACOUSTIC</span>
-              <span className="text-[10px] font-semibold tracking-widest text-dark/60 uppercase">Ceilings & Drywall</span>
+              <span className="text-xl font-bold text-primary leading-none">CM ACOUSTIC LLC</span>
+              <span className="text-[10px] font-semibold tracking-widest text-dark/60 uppercase">Ceilings & Wall Panels</span>
             </div>
           </Link>
 
